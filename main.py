@@ -48,9 +48,10 @@ def submit() -> str:
         url = f'https://api.telegram.org/bot{config.BOT_TOKEN}/sendMessage'
         data = {'chat_id': config.CHAT_ID, 'text': message}
         try:
-            requests.post(url, data=data, timeout=5)
-        except Exception:
-            pass
+            response = requests.post(url, data=data, timeout=5)
+            print(response.status_code, response.text)
+        except Exception as e:
+            print('텔레그램 전송 오류:', str(e))
     return 'OK'
 
 if __name__ == '__main__':
