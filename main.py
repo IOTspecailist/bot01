@@ -12,10 +12,23 @@ from flask import (
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
+# Attempt to load environment variables from a .env file if present.
+if not load_dotenv():
+    print("[INFO] .env file not found; falling back to system environment or secrets.py")
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-CHAT_ID = os.getenv("CHAT_ID")
+# Optional secrets.py allows tokens to be provided without a .env file
+try:  # pragma: no cover - optional secret file
+    from secrets import BOT_TOKEN as SECRET_BOT_TOKEN, CHAT_ID as SECRET_CHAT_ID
+    print("[INFO] Credentials loaded from secrets.py")
+except Exception:
+    SECRET_BOT_TOKEN = None
+    SECRET_CHAT_ID = None
+    print("[INFO] secrets.py not found; relying on environment variables")
+
+BOT_TOKEN = os.getenv("BOT_TOKEN") or SECRET_BOT_TOKEN
+CHAT_ID = os.getenv("CHAT_ID") or SECRET_CHAT_ID
+if not BOT_TOKEN or not CHAT_ID:
+    print("[INFO] BOT_TOKEN or CHAT_ID not configured; Telegram sending disabled")
 
 
 def create_app() -> Flask:
