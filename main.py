@@ -1,12 +1,32 @@
 import os
 import time
 import html
-from flask import Flask, render_template, request, abort, session
+from flask import (
+    Flask,
+    render_template,
+    request,
+    abort,
+    session,
+    current_app,
+)
 import requests
-import config
+from dotenv import load_dotenv
 
-app = Flask(__name__, static_folder=None)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'change_me')
+load_dotenv()
+
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+CHAT_ID = os.getenv("CHAT_ID")
+
+
+def create_app() -> Flask:
+    app = Flask(__name__, static_folder=None)
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'change_me')
+    app.config['BOT_TOKEN'] = BOT_TOKEN
+    app.config['CHAT_ID'] = CHAT_ID
+    return app
+
+
+app = create_app()
 
 # Simple in-memory rate limiter
 RATE_LIMIT = {}
@@ -44,9 +64,11 @@ def submit() -> str:
 
     text = html.escape(request.form.get('text', ''), quote=True)
     message = f'IP: {ip}\nMessage: {text}'
-    if config.BOT_TOKEN and config.CHAT_ID:
-        url = f'https://api.telegram.org/bot{config.BOT_TOKEN}/sendMessage'
-        data = {'chat_id': config.CHAT_ID, 'text': message}
+    bot_token = current_app.config['BOT_TOKEN']
+    chat_id = current_app.config['CHAT_ID']
+    if bot_token and chat_id:
+        url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
+        data = {'chat_id': chat_id, 'text': message}
         try:
             response = requests.post(url, data=data, timeout=5)
             print(response.status_code, response.text)
