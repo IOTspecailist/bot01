@@ -66,6 +66,12 @@ def index() -> str:
     session['csrf_token'] = token
     return render_template('index.html', csrf_token=token)
 
+
+@app.route('/map')
+def world_map() -> str:
+    """Serve the world map page."""
+    return render_template('map.html')
+
 @app.route('/submit', methods=['POST'])
 def submit() -> str:
     ip = request.remote_addr or 'unknown'
