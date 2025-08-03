@@ -10,6 +10,7 @@ from flask import (
     current_app,
 )
 import requests
+import pyfiglet
 from dotenv import load_dotenv
 
 # Attempt to load environment variables from a .env file if present.
@@ -65,6 +66,12 @@ def index() -> str:
     token = os.urandom(16).hex()
     session['csrf_token'] = token
     return render_template('index.html', csrf_token=token)
+
+
+@app.route('/ascii')
+def ascii_art() -> str:
+    art = pyfiglet.figlet_format('Hello, ASCII!')
+    return render_template('ascii.html', art=art)
 
 @app.route('/submit', methods=['POST'])
 def submit() -> str:
