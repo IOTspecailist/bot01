@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sent</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .message-box {
+            text-align: center;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .message-box h1 {
+            color: #4285f4;
+            margin-bottom: 20px;
+        }
+
+        .message-box p {
+            color: #333333;
+            margin-bottom: 20px;
+        }
+
+        .back {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #4285f4;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .back:hover {
+            background: #357ae8;
+        }
+    </style>
+</head>
+<body>
+    <div class="message-box">
+        <h1>Message Sent</h1>
+        <p>{{ text }}</p>
+        <a href="/" class="back">Back</a>
+    </div>
+</body>
+</html>
+

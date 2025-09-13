@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Search</title>
+    <title>Send</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -31,7 +31,7 @@
             max-width: 560px;
         }
 
-        .search-box {
+        .send-box {
             width: 100%;
             padding: 10px 20px;
             font-size: 16px;
@@ -63,12 +63,12 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo">MySearch</div>
-        <form action="/submit" method="post">
+        <div class="logo">MySend</div>
+        <form action="/send" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <input type="text" name="text" class="search-box" placeholder="Search" required>
+            <input type="text" name="text" class="send-box" placeholder="Send" required>
             <div class="buttons">
-                <button type="submit">Search</button>
+                <button type="submit">Send</button>
                 <button type="button" onclick="window.location.href='/ascii'">ASCII Art</button>
             </div>
         </form>
