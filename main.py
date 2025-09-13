@@ -73,8 +73,8 @@ def ascii_art() -> str:
     art = pyfiglet.figlet_format('Hello, ASCII!')
     return render_template('ascii.html', art=art)
 
-@app.route('/submit', methods=['POST'])
-def submit() -> str:
+@app.route('/send', methods=['POST'])
+def send() -> str:
     ip = request.remote_addr or 'unknown'
     check_rate_limit(ip)
 
@@ -94,7 +94,7 @@ def submit() -> str:
             print(response.status_code, response.text)
         except Exception as e:
             print('텔레그램 전송 오류:', str(e))
-    return 'OK'
+    return render_template('result.html', text=text)
 
 if __name__ == '__main__':
     # Default port is 5000. Change to 80 for production if needed.
