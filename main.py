@@ -73,6 +73,11 @@ def ascii_art() -> str:
     art = pyfiglet.figlet_format('Hello, ASCII!')
     return render_template('ascii.html', art=art)
 
+
+@app.route('/market-overview')
+def market_overview() -> str:
+    return render_template('market_overview.html')
+
 @app.route('/send', methods=['POST'])
 def send() -> str:
     ip = request.remote_addr or 'unknown'
