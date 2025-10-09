@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Market Overview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0f141c;
+            --bg-card: #161d29;
+            --bg-card-muted: rgba(22, 29, 41, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f5f7ff;
+            --text-muted: rgba(245, 247, 255, 0.65);
+            --accent: #fcd535;
+            --accent-soft: rgba(252, 213, 53, 0.18);
+            --accent-2: #00b47e;
+            --danger: #f6465d;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+            background: radial-gradient(circle at top right, rgba(36, 50, 74, 0.8), transparent 55%),
+                        radial-gradient(circle at bottom left, rgba(17, 120, 100, 0.6), transparent 45%),
+                        var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page {
+            width: min(1200px, 94vw);
+            margin: 0 auto;
+            padding: 48px 0 64px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .title-block h1 {
+            margin: 0;
+            font-size: clamp(28px, 4vw, 36px);
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .title-block span {
+            display: block;
+            margin-top: 6px;
+            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 300;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .pill {
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pill strong {
+            color: var(--text-primary);
+        }
+
+        .grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .grid.overview {
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            margin-bottom: 36px;
+        }
+
+        .card {
+            border-radius: 20px;
+            background: linear-gradient(155deg, rgba(30, 40, 58, 0.85), rgba(18, 22, 34, 0.95));
+            padding: 20px 22px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(18px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .card h2 {
+            margin: 0 0 10px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .metric strong {
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .metric .delta {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(246, 70, 93, 0.12);
+            color: var(--danger);
+        }
+
+        .metric .delta.positive {
+            background: rgba(0, 180, 126, 0.14);
+            color: var(--accent-2);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 8px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .main-panels {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 3fr 2fr;
+        }
+
+        @media (max-width: 960px) {
+            .main-panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-card {
+            padding: 24px;
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+        }
+
+        .chart-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab {
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.04);
+            font-size: 13px;
+            color: var(--text-muted);
+            cursor: default;
+        }
+
+        .tab.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(252, 213, 53, 0.08);
+        }
+
+        .chart-placeholder {
+            position: relative;
+            height: 260px;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .chart-lines {
+            position: absolute;
+            inset: 16px;
+            background: repeating-linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0.04),
+                rgba(255, 255, 255, 0.04) 1px,
+                transparent 1px,
+                transparent 68px
+            ),
+            repeating-linear-gradient(
+                to top,
+                rgba(255, 255, 255, 0.03),
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px,
+                transparent 42px
+            );
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .bars {
+            position: absolute;
+            inset: 16px;
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+            padding: 0 14px 6px;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, rgba(252, 213, 83, 0.9), rgba(252, 213, 83, 0.3));
+            border-radius: 6px 6px 2px 2px;
+        }
+
+        .line {
+            position: absolute;
+            inset: 30px 16px;
+            border-radius: 16px;
+            background: none;
+        }
+
+        .line svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .line path {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.55);
+            stroke-width: 2;
+        }
+
+        .side-card {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            padding: 24px;
+        }
+
+        .side-card h3 {
+            margin: 0 0 14px;
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .token-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .token-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .token-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .token-meta span {
+            display: block;
+        }
+
+        .token-symbol {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .token-name {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .token-change {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .token-change.positive {
+            color: var(--accent-2);
+        }
+
+        .token-change.negative {
+            color: var(--danger);
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            color: var(--text-muted);
+            font-size: 13px;
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 40px;
+            font-size: 14px;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <div class="title-block">
+                <h1>Crypto Pulse</h1>
+                <span>시장의 숨결을 한눈에. 실시간처럼 정돈된 고급 대시보드</span>
+            </div>
+            <div class="header-actions">
+                <div class="pill">
+                    총 시총 <strong>$1.23T</strong>
+                </div>
+                <div class="pill">
+                    24h 거래량 <strong>$68.4B</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid overview">
+            <div class="card">
+                <h2>Top Token</h2>
+                <div class="metric">
+                    <strong>BTC</strong>
+                    <span class="delta negative">-1.27%</span>
+                </div>
+                <div class="badge">$26,120 · 시총 505B</div>
+            </div>
+            <div class="card">
+                <h2>알트 상승률</h2>
+                <div class="metric">
+                    <strong>ASTER</strong>
+                    <span class="delta negative">-3.00%</span>
+                </div>
+                <div class="badge">$0.0825 · 신규 상장</div>
+            </div>
+            <div class="card">
+                <h2>Top Gainer</h2>
+                <div class="metric">
+                    <strong>MBL</strong>
+                    <span class="delta positive">+38.41%</span>
+                </div>
+                <div class="badge">스포트라이트 토큰</div>
+            </div>
+            <div class="card">
+                <h2>Top Loser</h2>
+                <div class="metric">
+                    <strong>ZEC</strong>
+                    <span class="delta negative">-12.07%</span>
+                </div>
+                <div class="badge">24h 변동성 최고치</div>
+            </div>
+        </div>
+
+        <div class="main-panels">
+            <div class="card chart-card">
+                <div class="chart-header">
+                    <h3>Trading Data · BTCUSDT</h3>
+                    <div class="tabs">
+                        <span class="tab active">USDⓂ Perpetual</span>
+                        <span class="tab">CoinⓂ Futures</span>
+                    </div>
+                </div>
+                <div class="chart-placeholder">
+                    <div class="chart-lines"></div>
+                    <div class="bars">
+                        <div class="bar" style="height: 46%;"></div>
+                        <div class="bar" style="height: 52%;"></div>
+                        <div class="bar" style="height: 44%;"></div>
+                        <div class="bar" style="height: 62%;"></div>
+                        <div class="bar" style="height: 40%;"></div>
+                        <div class="bar" style="height: 58%;"></div>
+                        <div class="bar" style="height: 47%;"></div>
+                        <div class="bar" style="height: 66%;"></div>
+                        <div class="bar" style="height: 51%;"></div>
+                        <div class="bar" style="height: 63%;"></div>
+                    </div>
+                    <div class="line">
+                        <svg viewBox="0 0 500 200" preserveAspectRatio="none">
+                            <path d="M0,120 C60,90 120,140 180,110 C240,80 300,150 360,115 C420,90 470,135 500,105" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="card side-card">
+                <h3>핫 토큰 랭킹</h3>
+                <div class="token-list">
+                    <div class="token-item">
+                        <div class="token-meta">
+                            <span class="token-symbol">ETH</span>
+                            <span class="token-name">이더리움</span>
+                        </div>
+                        <span class="token-change negative">-1.27%</span>
+                    </div>
+                    <div class="token-item">
+                        <div class="token-meta">
+                            <span class="token-symbol">SOL</span>
+                            <span class="token-name">솔라나</span>
+                        </div>
+                        <span class="token-change positive">+4.12%</span>
+                    </div>
+                    <div class="token-item">
+                        <div class="token-meta">
+                            <span class="token-symbol">RWA</span>
+                            <span class="token-name">리얼월드 자산</span>
+                        </div>
+                        <span class="token-change positive">+6.98%</span>
+                    </div>
+                    <div class="token-item">
+                        <div class="token-meta">
+                            <span class="token-symbol">BNB</span>
+                            <span class="token-name">바이낸스코인</span>
+                        </div>
+                        <span class="token-change negative">-1.65%</span>
+                    </div>
+                    <div class="token-item">
+                        <div class="token-meta">
+                            <span class="token-symbol">ARB</span>
+                            <span class="token-name">아비트럼</span>
+                        </div>
+                        <span class="token-change positive">+3.52%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="footer-note">데이터는 연출을 위한 더미 값입니다. 실제 투자 의사결정을 위한 용도가 아닙니다.</p>
+        <a class="back-link" href="/">← 돌아가기</a>
+    </div>
+</body>
+</html>
