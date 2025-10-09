@@ -1,57 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Sent</title>
+    <title>Message Delivered | Crypto Pulse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            color-scheme: dark;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f0f0;
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 12% 25%, rgba(111, 123, 255, 0.45), transparent 55%),
+                        radial-gradient(circle at 88% 18%, rgba(55, 255, 167, 0.35), transparent 50%),
+                        #04060d;
+            font-family: 'Poppins', 'Noto Sans KR', sans-serif;
+            color: #f3f7ff;
+            padding: 40px 16px;
+        }
+
+        .card {
+            width: min(520px, 94vw);
+            background: rgba(8, 12, 22, 0.9);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+            padding: 46px 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: "";
+            position: absolute;
+            inset: -140px -120px 40% -120px;
+            background: linear-gradient(135deg, rgba(25, 208, 255, 0.25), transparent);
+            pointer-events: none;
+        }
+
+        h1 {
+            margin: 0 0 16px;
+            font-size: 32px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .highlight {
+            font-size: 14px;
+            letter-spacing: 0.22em;
+            color: rgba(255, 255, 255, 0.55);
+            text-transform: uppercase;
+        }
+
+        .message {
+            margin: 28px auto 36px;
+            padding: 18px 22px;
+            border-radius: 18px;
+            background: rgba(20, 28, 44, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            font-size: 16px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .actions {
             display: flex;
             justify-content: center;
-            align-items: center;
+            gap: 16px;
         }
 
-        .message-box {
-            text-align: center;
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .message-box h1 {
-            color: #4285f4;
-            margin-bottom: 20px;
-        }
-
-        .message-box p {
-            color: #333333;
-            margin-bottom: 20px;
-        }
-
-        .back {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #4285f4;
-            color: #ffffff;
+        a.button {
+            padding: 14px 28px;
+            border-radius: 999px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 13px;
             text-decoration: none;
-            border-radius: 4px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
         }
 
-        .back:hover {
-            background: #357ae8;
+        a.button.primary {
+            background: linear-gradient(135deg, #ffb347 0%, #0ba2ff 100%);
+            color: #04060d;
+            box-shadow: 0 18px 44px rgba(11, 162, 255, 0.45);
+        }
+
+        a.button.secondary {
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #f3f7ff;
+            background: transparent;
+        }
+
+        a.button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 46px rgba(0, 0, 0, 0.45);
+            filter: saturate(1.05);
+        }
+
+        .timestamp {
+            margin-top: 28px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.22em;
         }
     </style>
 </head>
 <body>
-    <div class="message-box">
-        <h1>Message Sent</h1>
-        <p>{{ text }}</p>
-        <a href="/" class="back">Back</a>
+    <div class="card">
+        <div class="highlight">MESSAGE DELIVERED</div>
+        <h1>데스크에 전송 완료</h1>
+        <div class="message">{{ text }}</div>
+        <div class="actions">
+            <a class="button primary" href="/">메인 허브로 이동</a>
+            <a class="button secondary" href="/market-overview">Crypto Pulse 열람</a>
+        </div>
+        <div class="timestamp">Concierge will respond shortly</div>
     </div>
 </body>
 </html>
-

@@ -1,20 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>ASCII Art</title>
+    <title>Crypto Pulse ASCII Suite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: monospace;
-            background: #ffffff;
-            margin: 20px;
+        :root {
+            color-scheme: dark;
         }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 15% 15%, rgba(64, 224, 208, 0.25), transparent 55%),
+                        radial-gradient(circle at 85% 20%, rgba(111, 123, 255, 0.35), transparent 50%),
+                        #05070d;
+            color: #eff5ff;
+            font-family: 'Fira Code', 'Noto Sans KR', monospace;
+            padding: 40px 16px;
+        }
+
+        .terminal {
+            width: min(860px, 90vw);
+            background: rgba(8, 12, 22, 0.92);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 55px rgba(0, 0, 0, 0.55);
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            background: rgba(14, 20, 34, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .window-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #37ffa7;
+            box-shadow: 0 0 12px rgba(55, 255, 167, 0.6);
+        }
+
+        .dot:nth-child(2) {
+            background: #19d0ff;
+            box-shadow: 0 0 12px rgba(25, 208, 255, 0.6);
+        }
+
+        .dot:nth-child(3) {
+            background: #ffb347;
+            box-shadow: 0 0 12px rgba(255, 179, 71, 0.6);
+        }
+
+        .terminal-title {
+            font-size: 13px;
+            letter-spacing: 0.18em;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+        }
+
         pre {
+            margin: 0;
+            padding: 32px 36px;
+            white-space: pre-wrap;
+            word-break: break-word;
             font-size: 16px;
+            line-height: 1.4;
+            text-shadow: 0 0 16px rgba(55, 255, 167, 0.25);
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px 28px;
+            background: rgba(8, 12, 22, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        a.back {
+            padding: 12px 24px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            color: #eff5ff;
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 12px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        a.back:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+        }
+
+        .status {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.2em;
         }
     </style>
 </head>
 <body>
-    <pre>{{ art }}</pre>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="window-buttons">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+            <span class="terminal-title">CRYPTO PULSE PREMIUM ASCII</span>
+            <span class="status">LIVE</span>
+        </div>
+        <pre>{{ art }}</pre>
+        <div class="toolbar">
+            <span class="status">Press ⌘C to copy snapshot</span>
+            <a class="back" href="/">메인 허브로 돌아가기</a>
+        </div>
+    </div>
 </body>
 </html>
