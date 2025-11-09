@@ -1,6 +1,10 @@
 import os
 import time
-import html
+import atexit
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from typing import Iterable, Optional
+
 from flask import (
     Flask,
     render_template,
@@ -12,6 +16,9 @@ from flask import (
 import requests
 import pyfiglet
 from dotenv import load_dotenv
+from markupsafe import Markup, escape
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 # Attempt to load environment variables from a .env file if present.
 if not load_dotenv():
@@ -32,6 +39,67 @@ if not BOT_TOKEN or not CHAT_ID:
     print("[INFO] BOT_TOKEN or CHAT_ID not configured; Telegram sending disabled")
 
 
+MARKET_LINKS: Iterable[tuple[str, str]] = (
+    ("경제달력", "https://kr.investing.com/economic-calendar/"),
+    ("중앙은행 기준금리", "https://kr.investing.com/central-banks/"),
+)
+
+SCHEDULE_TIMEZONE = ZoneInfo("Asia/Seoul")
+
+
+def format_links_message() -> str:
+    return "\n".join(f"{name}: {url}" for name, url in MARKET_LINKS)
+
+
+def format_for_display(text: str) -> Markup:
+    safe_text = escape(text)
+    return Markup("<br>".join(str(safe_text).splitlines()))
+
+
+def send_telegram_message(bot_token: Optional[str], chat_id: Optional[str], message: str) -> bool:
+    if not bot_token or not chat_id:
+        print("[WARN] Telegram credentials missing; message not sent")
+        return False
+
+    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+    data = {"chat_id": chat_id, "text": message}
+    try:
+        response = requests.post(url, data=data, timeout=5)
+        print(f"[INFO] Telegram response: {response.status_code} {response.text}")
+        return response.ok
+    except Exception as exc:  # pragma: no cover - network related
+        print("[ERROR] Telegram send failed:", str(exc))
+        return False
+
+
+def dispatch_market_links(
+    prefix: Optional[str] = None,
+    *,
+    bot_token: Optional[str] = None,
+    chat_id: Optional[str] = None,
+) -> str:
+    message = format_links_message()
+    if prefix:
+        message = f"{prefix}\n{message}"
+
+    send_telegram_message(bot_token or BOT_TOKEN, chat_id or CHAT_ID, message)
+    return message
+
+
+def scheduled_links_job() -> None:
+    dispatch_market_links()
+    now = datetime.now(SCHEDULE_TIMEZONE)
+    print(f"[INFO] Scheduled economic links dispatched at {now.isoformat()}")
+
+
+def should_start_scheduler() -> bool:
+    werkzeug_flag = os.environ.get("WERKZEUG_RUN_MAIN")
+    flask_debug = os.environ.get("FLASK_DEBUG", "0").lower()
+    if werkzeug_flag == "true":
+        return True
+    return werkzeug_flag is None and flask_debug in {"0", "false", ""}
+
+
 def create_app() -> Flask:
     app = Flask(__name__, static_folder=None)
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'change_me')
@@ -41,6 +109,32 @@ def create_app() -> Flask:
 
 
 app = create_app()
+
+
+scheduler = BackgroundScheduler(timezone=SCHEDULE_TIMEZONE)
+scheduler.add_job(
+    scheduled_links_job,
+    CronTrigger(hour=8, minute=20, timezone=SCHEDULE_TIMEZONE),
+    id="daily_market_links",
+    replace_existing=True,
+)
+
+SCHEDULER_STARTED = False
+if should_start_scheduler():
+    scheduler.start()
+    SCHEDULER_STARTED = True
+    print("[INFO] Daily market links scheduler started")
+else:
+    print("[INFO] Scheduler start deferred (likely running under Flask reloader)")
+
+
+def shutdown_scheduler() -> None:
+    if getattr(scheduler, "running", False):
+        scheduler.shutdown(wait=False)
+        print("[INFO] Scheduler shut down")
+
+
+atexit.register(shutdown_scheduler)
 
 # Simple in-memory rate limiter
 RATE_LIMIT = {}
@@ -87,19 +181,29 @@ def send() -> str:
     if not token or token != session.get('csrf_token'):
         abort(400)
 
-    text = html.escape(request.form.get('text', ''), quote=True)
-    message = f'IP: {ip}\nMessage: {text}'
+    raw_text = request.form.get('text', '')
+    display_text = format_for_display(raw_text)
+    message = f"IP: {ip}\nMessage: {raw_text}"
     bot_token = current_app.config['BOT_TOKEN']
     chat_id = current_app.config['CHAT_ID']
-    if bot_token and chat_id:
-        url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
-        data = {'chat_id': chat_id, 'text': message}
-        try:
-            response = requests.post(url, data=data, timeout=5)
-            print(response.status_code, response.text)
-        except Exception as e:
-            print('텔레그램 전송 오류:', str(e))
-    return render_template('result.html', text=text)
+    send_telegram_message(bot_token, chat_id, message)
+    return render_template('result.html', text=display_text)
+
+
+@app.route('/send-links', methods=['POST'])
+def send_links() -> str:
+    ip = request.remote_addr or 'unknown'
+    check_rate_limit(ip)
+
+    token = request.form.get('csrf_token', '')
+    if not token or token != session.get('csrf_token'):
+        abort(400)
+
+    bot_token = current_app.config['BOT_TOKEN']
+    chat_id = current_app.config['CHAT_ID']
+    message = dispatch_market_links(prefix=f"[Manual Trigger] IP: {ip}", bot_token=bot_token, chat_id=chat_id)
+    display_text = format_for_display(format_links_message())
+    return render_template('result.html', text=display_text)
 
 if __name__ == '__main__':
     # Default port is 5000. Change to 80 for production if needed.
