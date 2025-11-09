@@ -184,6 +184,15 @@
             margin-top: 12px;
         }
 
+        .quick-links-form {
+            margin-top: 18px;
+        }
+
+        .quick-links-form .button {
+            width: 100%;
+            justify-content: center;
+        }
+
         .button {
             display: inline-flex;
             align-items: center;
@@ -401,6 +410,10 @@
                         <button type="button" class="button" onclick="window.location.href='/market-overview'">Crypto Pulse</button>
                         <button type="button" class="button" onclick="toggleOverlay(true)">Prime Briefing</button>
                     </div>
+                </form>
+                <form action="/send-links" method="post" class="quick-links-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="button gradient">경제/금리 링크 전송</button>
                 </form>
             </section>
 
