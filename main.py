@@ -1,9 +1,10 @@
 import os
 import time
 import atexit
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from typing import Iterable, Optional
+from threading import Lock
 
 from flask import (
     Flask,
@@ -47,6 +48,16 @@ MARKET_LINKS: Iterable[tuple[str, str]] = (
 SCHEDULE_TIMEZONE = ZoneInfo("Asia/Seoul")
 
 
+MIN_SCHEDULE_DISPATCH_INTERVAL = timedelta(minutes=1)
+LAST_SCHEDULED_DISPATCH: Optional[datetime] = None
+SCHEDULE_DISPATCH_LOCK = Lock()
+
+
+def _set_last_scheduled_dispatch(timestamp: datetime) -> None:
+    global LAST_SCHEDULED_DISPATCH
+    LAST_SCHEDULED_DISPATCH = timestamp
+
+
 def format_links_message() -> str:
     return "\n".join(f"{name}: {url}" for name, url in MARKET_LINKS)
 
@@ -87,8 +98,21 @@ def dispatch_market_links(
 
 
 def scheduled_links_job() -> None:
-    dispatch_market_links()
     now = datetime.now(SCHEDULE_TIMEZONE)
+    with SCHEDULE_DISPATCH_LOCK:
+        if (
+            LAST_SCHEDULED_DISPATCH is not None
+            and now - LAST_SCHEDULED_DISPATCH < MIN_SCHEDULE_DISPATCH_INTERVAL
+        ):
+            print(
+                "[INFO] Duplicate scheduled dispatch detected; "
+                f"last at {LAST_SCHEDULED_DISPATCH.isoformat()}, skipping"
+            )
+            return
+
+        dispatch_market_links()
+        _set_last_scheduled_dispatch(now)
+
     print(f"[INFO] Scheduled economic links dispatched at {now.isoformat()}")
 
 
