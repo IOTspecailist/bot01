@@ -1,7 +1,7 @@
 import os
 import time
 import atexit
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 from typing import Iterable, Optional
 from threading import Lock
@@ -50,12 +50,14 @@ SCHEDULE_TIMEZONE = ZoneInfo("Asia/Seoul")
 
 MIN_SCHEDULE_DISPATCH_INTERVAL = timedelta(minutes=1)
 LAST_SCHEDULED_DISPATCH: Optional[datetime] = None
+LAST_SCHEDULED_DISPATCH_DATE: Optional[date] = None
 SCHEDULE_DISPATCH_LOCK = Lock()
 
 
 def _set_last_scheduled_dispatch(timestamp: datetime) -> None:
-    global LAST_SCHEDULED_DISPATCH
+    global LAST_SCHEDULED_DISPATCH, LAST_SCHEDULED_DISPATCH_DATE
     LAST_SCHEDULED_DISPATCH = timestamp
+    LAST_SCHEDULED_DISPATCH_DATE = timestamp.date()
 
 
 def format_links_message() -> str:
@@ -100,6 +102,16 @@ def dispatch_market_links(
 def scheduled_links_job() -> None:
     now = datetime.now(SCHEDULE_TIMEZONE)
     with SCHEDULE_DISPATCH_LOCK:
+        if (
+            LAST_SCHEDULED_DISPATCH_DATE is not None
+            and LAST_SCHEDULED_DISPATCH_DATE == now.date()
+        ):
+            print(
+                "[INFO] Scheduled dispatch already sent for today; "
+                f"last at {LAST_SCHEDULED_DISPATCH.isoformat()}, skipping"
+            )
+            return
+
         if (
             LAST_SCHEDULED_DISPATCH is not None
             and now - LAST_SCHEDULED_DISPATCH < MIN_SCHEDULE_DISPATCH_INTERVAL
