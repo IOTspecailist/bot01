@@ -2,22 +2,22 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Crypto Pulse - Command Center</title>
+    <title>뉴스 브리핑 허브</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            color-scheme: dark;
-            --bg-primary: #05070d;
-            --bg-secondary: rgba(255, 255, 255, 0.03);
-            --card-bg: rgba(14, 20, 34, 0.85);
-            --accent: linear-gradient(135deg, #ffb347 0%, #ffcc33 35%, #0ba2ff 100%);
-            --accent-strong: linear-gradient(135deg, #6f7bff 0%, #19d0ff 50%, #37ffa7 100%);
-            --text-primary: #f5f7ff;
-            --text-muted: rgba(245, 247, 255, 0.65);
-            --border-soft: rgba(255, 255, 255, 0.08);
-            --shadow-xl: 0 20px 60px rgba(3, 6, 15, 0.65);
+            color-scheme: light;
+            --bg: #f5f7fb;
+            --surface: #ffffff;
+            --surface-subtle: #f0f2f7;
+            --text-primary: #20252d;
+            --text-secondary: #5c6574;
+            --accent: #1a73e8;
+            --accent-soft: rgba(26, 115, 232, 0.08);
+            --border: #dfe3ec;
+            --shadow: 0 18px 45px rgba(31, 51, 84, 0.12);
         }
 
         * {
@@ -25,172 +25,184 @@
         }
 
         body {
-            font-family: 'Poppins', 'Noto Sans KR', sans-serif;
-            background: radial-gradient(circle at 20% -10%, rgba(79, 92, 255, 0.45), transparent 55%),
-                        radial-gradient(circle at 80% 0%, rgba(0, 173, 239, 0.35), transparent 50%),
-                        var(--bg-primary);
             margin: 0;
-            color: var(--text-primary);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
         }
 
         .page-shell {
-            width: min(1100px, 92vw);
+            width: min(1120px, 92vw);
             margin: 0 auto;
-            flex: 1;
-            padding: 40px 0 80px;
+            padding: 48px 0 64px;
         }
 
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 0 24px;
+            margin-bottom: 48px;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
+            gap: 16px;
         }
 
-        .brand-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: var(--accent-strong);
+        .brand-mark {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #1a73e8, #2db3ff);
             display: grid;
             place-items: center;
             font-weight: 700;
-            color: #02050c;
-            box-shadow: 0 12px 32px rgba(55, 255, 167, 0.25);
+            color: #ffffff;
+            font-size: 18px;
+            box-shadow: 0 16px 32px rgba(26, 115, 232, 0.28);
+        }
+
+        .brand-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .brand-copy span:first-child {
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .brand-copy span:last-child {
+            font-size: 13px;
+            color: var(--text-secondary);
+            letter-spacing: 0.08em;
         }
 
         nav {
             display: flex;
-            align-items: center;
             gap: 20px;
         }
 
         nav a {
-            color: var(--text-muted);
+            color: var(--text-secondary);
             text-decoration: none;
             font-size: 14px;
-            letter-spacing: 0.06em;
+            font-weight: 500;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
-            transition: color 0.2s ease;
+            padding: 10px 0;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
         }
 
         nav a:hover {
-            color: var(--text-primary);
+            color: var(--accent);
+            border-color: var(--accent);
         }
 
-        .nav-buttons {
+        .nav-actions {
             display: flex;
             gap: 12px;
         }
 
-        .nav-buttons button {
-            background: transparent;
-            border: 1px solid var(--border-soft);
+        .nav-actions button {
+            border: 1px solid var(--border);
+            background: var(--surface);
             color: var(--text-primary);
             padding: 10px 20px;
             border-radius: 999px;
             font-size: 13px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .nav-buttons button.primary {
-            background: var(--accent);
-            border-color: transparent;
-            color: #05070d;
             font-weight: 600;
-            box-shadow: 0 14px 36px rgba(12, 128, 255, 0.35);
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: background 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .nav-buttons button:hover {
-            transform: translateY(-3px);
-            border-color: rgba(255, 255, 255, 0.3);
+        .nav-actions button.primary {
+            background: var(--accent);
+            color: #ffffff;
+            box-shadow: 0 12px 26px rgba(26, 115, 232, 0.26);
+            border-color: transparent;
         }
 
-        .nav-buttons button.primary:hover {
-            filter: saturate(1.2);
+        .nav-actions button:hover {
+            background: var(--surface-subtle);
+        }
+
+        .nav-actions button.primary:hover {
+            background: #165fc0;
         }
 
         main {
             display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 40px;
-            align-items: center;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+            gap: 36px;
+            align-items: start;
         }
 
-        .hero-copy h1 {
-            font-size: clamp(36px, 4vw, 56px);
-            margin: 0 0 18px;
-            line-height: 1.1;
+        .hero-card {
+            background: var(--surface);
+            border-radius: 28px;
+            padding: 42px 48px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
         }
 
-        .hero-copy p {
-            color: var(--text-muted);
-            font-weight: 300;
+        .hero-card h1 {
+            font-size: clamp(32px, 4vw, 48px);
+            margin: 0;
+            line-height: 1.15;
+        }
+
+        .hero-card p {
+            margin: 0;
+            color: var(--text-secondary);
+            line-height: 1.7;
             font-size: 16px;
-            line-height: 1.6;
-            margin: 0 0 32px;
         }
 
         form {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
 
-        .input-label {
-            font-size: 13px;
-            letter-spacing: 0.12em;
+        .field-label {
+            font-size: 12px;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
-            color: var(--text-muted);
+            color: var(--text-secondary);
         }
 
         .send-box {
             width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 18px;
             padding: 18px 22px;
             font-size: 17px;
-            border-radius: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(6, 9, 19, 0.8);
+            background: var(--surface-subtle);
             color: var(--text-primary);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .send-box:focus {
             outline: none;
-            border-color: rgba(88, 225, 255, 0.9);
-            box-shadow: 0 0 0 3px rgba(88, 225, 255, 0.25);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+            background: #ffffff;
         }
 
         .actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 14px;
-            margin-top: 12px;
-        }
-
-        .quick-links-form {
-            margin-top: 18px;
-        }
-
-        .quick-links-form .button {
-            width: 100%;
-            justify-content: center;
+            gap: 12px;
         }
 
         .button {
@@ -200,67 +212,64 @@
             gap: 10px;
             padding: 14px 22px;
             border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            background: var(--surface-subtle);
             color: var(--text-primary);
-            font-weight: 500;
+            font-weight: 600;
             font-size: 15px;
-            letter-spacing: 0.02em;
             cursor: pointer;
-            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
         }
 
         .button:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
-            border-color: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+            background: #ffffff;
+            box-shadow: 0 10px 26px rgba(31, 51, 84, 0.12);
         }
 
-        .button.gradient {
+        .button.primary {
             background: var(--accent);
-            color: #04060d;
+            color: #ffffff;
             border: none;
-            box-shadow: 0 20px 50px rgba(0, 185, 255, 0.45);
+            box-shadow: 0 14px 30px rgba(26, 115, 232, 0.26);
         }
 
-        .analytics-card {
-            background: var(--card-bg);
-            border-radius: 26px;
-            padding: 32px;
+        .button.primary:hover {
+            background: #165fc0;
+        }
+
+        .quick-links-form .button {
+            width: 100%;
+        }
+
+        .insights-card {
+            background: var(--surface);
+            border-radius: 28px;
+            padding: 36px;
+            box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
-            box-shadow: var(--shadow-xl);
         }
 
-        .analytics-card::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 60%);
-            pointer-events: none;
-        }
-
-        .analytics-card h2 {
-            margin: 0 0 26px;
+        .insights-card h2 {
+            margin: 0 0 24px;
             font-size: 18px;
-            letter-spacing: 0.3em;
+            letter-spacing: 0.28em;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.65);
+            color: var(--text-secondary);
         }
 
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 18px;
+            gap: 16px;
         }
 
         .stat {
-            background: rgba(8, 12, 22, 0.85);
             border-radius: 18px;
             padding: 18px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            position: relative;
-            overflow: hidden;
+            background: var(--surface-subtle);
+            border: 1px solid var(--border);
         }
 
         .stat span {
@@ -269,207 +278,136 @@
 
         .stat .label {
             font-size: 12px;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--text-secondary);
             margin-bottom: 8px;
         }
 
         .stat .value {
             font-size: 22px;
-            font-weight: 600;
+            font-weight: 700;
+            color: var(--text-primary);
         }
 
         .stat .trend {
             margin-top: 12px;
-            font-size: 14px;
-            color: #37ffa7;
+            font-size: 13px;
+            color: #0a7a5c;
         }
 
-        .preview-note {
+        .note {
             margin-top: 26px;
             font-size: 13px;
-            color: rgba(255, 255, 255, 0.45);
-        }
-
-        .overlay {
-            position: fixed;
-            inset: 0;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            background: rgba(3, 6, 14, 0.7);
-            backdrop-filter: blur(6px);
-            z-index: 1000;
-        }
-
-        .overlay.active {
-            display: flex;
-        }
-
-        .overlay-card {
-            background: rgba(10, 14, 24, 0.95);
-            border-radius: 20px;
-            padding: 36px;
-            width: min(420px, 90vw);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 24px 70px rgba(2, 6, 15, 0.65);
-            text-align: center;
-        }
-
-        .overlay-card h3 {
-            margin: 0 0 12px;
-            font-size: 22px;
-        }
-
-        .overlay-card p {
-            color: var(--text-muted);
+            color: var(--text-secondary);
             line-height: 1.6;
-            margin-bottom: 24px;
-        }
-
-        .close-button {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: var(--text-primary);
-            padding: 10px 28px;
-            border-radius: 999px;
-            cursor: pointer;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
         }
 
         footer {
-            padding: 24px 0 40px;
+            margin-top: 60px;
             text-align: center;
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.35);
-            letter-spacing: 0.18em;
+            color: var(--text-secondary);
+            letter-spacing: 0.16em;
         }
 
         @media (max-width: 920px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .nav-actions {
+                align-self: stretch;
+            }
+
             main {
                 grid-template-columns: 1fr;
-                gap: 48px;
             }
 
-            .hero-copy {
-                text-align: center;
-            }
-
-            form {
-                align-items: stretch;
-            }
-
-            .actions {
-                justify-content: center;
+            .hero-card, .insights-card {
+                padding: 32px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="overlay" id="insight-overlay" role="dialog" aria-modal="true" aria-labelledby="insight-title">
-        <div class="overlay-card">
-            <h3 id="insight-title">Prime Desk Briefing</h3>
-            <p>맞춤형 매크로 인사이트는 곧 공개됩니다. 프리미엄 구독 고객에게 가장 먼저 알림을 전송해드릴게요.</p>
-            <button class="close-button" type="button" onclick="toggleOverlay(false)">닫기</button>
-        </div>
-    </div>
     <div class="page-shell">
         <header>
             <div class="brand">
-                <div class="brand-icon">CP</div>
-                <div>
-                    <div>CRYPTO PULSE</div>
-                    <small style="font-size:12px; color: rgba(255,255,255,0.45); letter-spacing:0.3em;">INSTITUTIONAL</small>
+                <div class="brand-mark">NB</div>
+                <div class="brand-copy">
+                    <span>NEWS BRIEF DESK</span>
+                    <span>아침 경제 뉴스 & 텔레그램 브리핑</span>
                 </div>
             </div>
             <nav>
-                <a href="#">Overview</a>
-                <a href="#">Yield Desk</a>
-                <a href="#">Institutional</a>
-                <a href="#">Research</a>
+                <a href="#">헤드라인</a>
+                <a href="#">시장지표</a>
+                <a href="#">칼럼</a>
+                <a href="#">데이터룸</a>
             </nav>
-            <div class="nav-buttons">
-                <button type="button">LOG IN</button>
-                <button type="button" class="primary">SIGN IN</button>
+            <div class="nav-actions">
+                <button type="button">구독 문의</button>
+                <button type="button" class="primary">브리핑 신청</button>
             </div>
         </header>
 
         <main>
-            <section class="hero-copy">
-                <h1>BLACK LABEL GRID</h1>
-                <p>300개 이상의 디지털 자산을 한 번에 스캔하고, 프리미엄 매매 시그널을 실시간으로 받아보세요. 지금 바로 메시지를 보내고 데스크 담당자와 연결됩니다.</p>
+            <section class="hero-card">
+                <div>
+                    <h1>텔레그램으로 전달되는 맞춤 경제 뉴스 요약</h1>
+                    <p>주요 경제 헤드라인과 금융시장 코멘트를 아침 8시에 정리해 보내드립니다. 데스크에 메시지를 남기면
+                    담당 에디터가 확인 후 피드백을 드립니다.</p>
+                </div>
                 <form action="/send" method="post">
-                    <span class="input-label">Secure Message</span>
+                    <span class="field-label">Telegram Dispatch</span>
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <input type="text" name="text" class="send-box" placeholder="데스크에 전달할 메시지를 입력하세요" required>
+                    <input type="text" name="text" class="send-box" placeholder="에디터에게 전달할 내용을 입력하세요" required>
                     <div class="actions">
-                        <button type="submit" class="button gradient">메시지 전송</button>
-                        <button type="button" class="button" onclick="window.location.href='/ascii'">프리미엄 ASCII</button>
-                        <button type="button" class="button" onclick="window.location.href='/market-overview'">Crypto Pulse</button>
-                        <button type="button" class="button" onclick="toggleOverlay(true)">Prime Briefing</button>
+                        <button type="submit" class="button primary">뉴스 요약 전송</button>
+                        <button type="button" class="button" onclick="window.location.href='/ascii'">ASCII 헤드라인</button>
+                        <button type="button" class="button" onclick="window.location.href='/market-overview'">경제지표 리포트</button>
                     </div>
                 </form>
                 <form action="/send-links" method="post" class="quick-links-form">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <button type="submit" class="button gradient">경제/금리 링크 전송</button>
+                    <button type="submit" class="button primary">추천 경제 캘린더 전송</button>
                 </form>
             </section>
 
-            <aside class="analytics-card">
-                <h2>24H SIGNAL BOARD</h2>
+            <aside class="insights-card">
+                <h2>MORNING DASHBOARD</h2>
                 <div class="stat-grid">
                     <div class="stat">
-                        <span class="label">USDT EARN</span>
-                        <span class="value">▲ 10.17%</span>
-                        <span class="trend">+0.43% vs 7d avg</span>
+                        <span class="label">KOSPI OPEN</span>
+                        <span class="value">2,612.45</span>
+                        <span class="trend">전일 대비 +0.42%</span>
                     </div>
                     <div class="stat">
-                        <span class="label">USDC FLEX</span>
-                        <span class="value">▲ 7.97%</span>
-                        <span class="trend">+0.18% vs 7d avg</span>
+                        <span class="label">USD/KRW</span>
+                        <span class="value">1,322.10</span>
+                        <span class="trend">원화 강세 4.80원</span>
                     </div>
                     <div class="stat">
-                        <span class="label">ETH LTV</span>
-                        <span class="value">▲ 4.29%</span>
-                        <span class="trend">+0.61% vs 7d avg</span>
+                        <span class="label">WTI FUTURES</span>
+                        <span class="value">$78.32</span>
+                        <span class="trend">-0.28% 아시아 장</span>
                     </div>
                     <div class="stat">
-                        <span class="label">BTC COVERED</span>
-                        <span class="value">▲ 12.45%</span>
-                        <span class="trend">+0.88% vs 7d avg</span>
+                        <span class="label">금리 전망</span>
+                        <span class="value">연준 9월 동결</span>
+                        <span class="trend">확률 62%</span>
                     </div>
                 </div>
-                <p class="preview-note">※ 리워드 수치는 예시이며, 실제 상품 조건은 상담 후 제공됩니다.</p>
+                <p class="note">※ 수치는 데모 데이터이며, 실제 수치는 실시간 브리핑에서 확인하실 수 있습니다.</p>
             </aside>
         </main>
+
+        <footer>
+            © 2024 NEWS BRIEF DESK. ALL RIGHTS RESERVED.
+        </footer>
     </div>
-    <footer>
-        © 2024 CRYPTO PULSE INSTITUTIONAL. ALL RIGHTS RESERVED.
-    </footer>
-
-    <script>
-        function toggleOverlay(show) {
-            const overlay = document.getElementById('insight-overlay');
-            if (show) {
-                overlay.classList.add('active');
-            } else {
-                overlay.classList.remove('active');
-            }
-        }
-
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                toggleOverlay(false);
-            }
-        });
-
-        document.getElementById('insight-overlay').addEventListener('click', function (event) {
-            if (event.target === this) {
-                toggleOverlay(false);
-            }
-        });
-    </script>
 </body>
 </html>
