@@ -128,14 +128,6 @@ def scheduled_links_job() -> None:
     print(f"[INFO] Scheduled economic links dispatched at {now.isoformat()}")
 
 
-def should_start_scheduler() -> bool:
-    werkzeug_flag = os.environ.get("WERKZEUG_RUN_MAIN")
-    flask_debug = os.environ.get("FLASK_DEBUG", "0").lower()
-    if werkzeug_flag == "true":
-        return True
-    return werkzeug_flag is None and flask_debug in {"0", "false", ""}
-
-
 def create_app() -> Flask:
     app = Flask(__name__, static_folder=None)
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'change_me')
@@ -156,12 +148,18 @@ scheduler.add_job(
 )
 
 SCHEDULER_STARTED = False
-if should_start_scheduler():
+
+
+def start_scheduler() -> None:
+    global SCHEDULER_STARTED
+    if scheduler.running:
+        return
     scheduler.start()
     SCHEDULER_STARTED = True
     print("[INFO] Daily market links scheduler started")
-else:
-    print("[INFO] Scheduler start deferred (likely running under Flask reloader)")
+
+
+start_scheduler()
 
 
 def shutdown_scheduler() -> None:
