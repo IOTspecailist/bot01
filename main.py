@@ -142,7 +142,7 @@ app = create_app()
 scheduler = BackgroundScheduler(timezone=SCHEDULE_TIMEZONE)
 scheduler.add_job(
     scheduled_links_job,
-    CronTrigger(hour=8, minute=20, timezone=SCHEDULE_TIMEZONE),
+    CronTrigger(hour=22, minute=58, timezone=SCHEDULE_TIMEZONE),
     id="daily_market_links",
     replace_existing=True,
 )
