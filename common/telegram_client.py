@@ -2,7 +2,7 @@
 Reusable Telegram client for sending messages.
 
 Environment variables required:
-- TELEGRAM_BOT_TOKEN
+- SPORTSDATAIO_API_KEY (Telegram bot token)
 - TELEGRAM_CHAT_ID
 
 No secrets are stored in code. Values must be provided via the environment.
@@ -29,6 +29,16 @@ def _get_env_variable(name: str) -> Optional[str]:
     return value
 
 
+def _get_bot_token() -> Optional[str]:
+    """Return the Telegram bot token from the environment.
+
+    SPORTSDATAIO_API_KEY is the canonical variable. TELEGRAM_BOT_TOKEN is kept as a
+    fallback for backward compatibility.
+    """
+
+    return _get_env_variable("SPORTSDATAIO_API_KEY") or _get_env_variable("TELEGRAM_BOT_TOKEN")
+
+
 def send_telegram_message(text: str, *, timeout: int = 10, retries: int = 1) -> bool:
     """
     Send a Telegram message using the Bot API.
@@ -41,7 +51,7 @@ def send_telegram_message(text: str, *, timeout: int = 10, retries: int = 1) -> 
     Returns:
         True when the message is delivered successfully, otherwise False.
     """
-    bot_token = _get_env_variable("TELEGRAM_BOT_TOKEN")
+    bot_token = _get_bot_token()
     chat_id = _get_env_variable("TELEGRAM_CHAT_ID")
     if not bot_token or not chat_id:
         return False
