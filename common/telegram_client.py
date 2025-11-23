@@ -52,14 +52,28 @@ def send_telegram_message(text: str, *, timeout: int = 10, retries: int = 1) -> 
     for attempt in range(retries + 1):
         try:
             response = requests.post(url, json=payload, timeout=timeout)
-            if response.ok:
+            if not response.ok:
+                logger.error(
+                    "Telegram API HTTP error (status=%s): %s",
+                    response.status_code,
+                    response.text,
+                )
+                continue
+
+            try:
+                data = response.json()
+            except ValueError:
+                logger.error("Telegram API returned non-JSON response: %s", response.text)
+                continue
+
+            if data.get("ok"):
                 logger.info("Telegram message sent successfully")
                 return True
 
             logger.error(
-                "Telegram API error (status=%s): %s",
-                response.status_code,
-                response.text,
+                "Telegram API error (code=%s): %s",
+                data.get("error_code"),
+                data.get("description"),
             )
         except requests.RequestException as exc:  # type: ignore[catching-any]
             logger.exception("Failed to send Telegram message: %s", exc)
