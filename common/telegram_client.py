@@ -32,11 +32,18 @@ def _get_env_variable(name: str) -> Optional[str]:
 def _get_bot_token() -> Optional[str]:
     """Return the Telegram bot token from the environment.
 
-    SPORTSDATAIO_API_KEY is the canonical variable. TELEGRAM_BOT_TOKEN is kept as a
-    fallback for backward compatibility.
+    The service exclusively uses ``SPORTSDATAIO_API_KEY`` for the Telegram bot
+    token. Removing additional fallbacks avoids misconfigurations when only the
+    canonical variable is expected to be present.
     """
 
-    return _get_env_variable("SPORTSDATAIO_API_KEY") or _get_env_variable("TELEGRAM_BOT_TOKEN")
+    return _get_env_variable("SPORTSDATAIO_API_KEY")
+
+
+def _get_chat_id() -> Optional[str]:
+    """Return the Telegram chat id with graceful fallbacks."""
+
+    return _get_env_variable("TELEGRAM_CHAT_ID") or _get_env_variable("TELEGRAM_CHATID")
 
 
 def send_telegram_message(text: str, *, timeout: int = 10, retries: int = 1) -> bool:
@@ -52,7 +59,7 @@ def send_telegram_message(text: str, *, timeout: int = 10, retries: int = 1) -> 
         True when the message is delivered successfully, otherwise False.
     """
     bot_token = _get_bot_token()
-    chat_id = _get_env_variable("TELEGRAM_CHAT_ID")
+    chat_id = _get_chat_id()
     if not bot_token or not chat_id:
         return False
 
