@@ -4,4 +4,3 @@ config.py
 *.pyc
 .example
 .env
-logs/
