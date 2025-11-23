@@ -10,6 +10,8 @@ from markupsafe import Markup, escape
 # Attempt to load environment variables from a .env file if present.
 load_dotenv()
 
+from common.telegram_client import send_telegram_message
+
 
 MARKET_LINKS: Iterable[tuple[str, str]] = (
     ("경제달력", "https://kr.investing.com/economic-calendar/"),
@@ -85,9 +87,22 @@ def send() -> str:
     if not token or token != session.get('csrf_token'):
         abort(400)
 
-    raw_text = request.form.get('text', '')
-    display_text = format_for_display(raw_text)
-    return render_template('result.html', text=display_text)
+    raw_text = request.form.get('text', '').strip()
+    message = f"[Web Dispatch] IP: {ip}\n{raw_text}" if raw_text else f"[Web Dispatch] IP: {ip}"
+    success = send_telegram_message(message, timeout=10, retries=1)
+
+    display_text = format_for_display(raw_text or "(메시지 없음)")
+    status_text = "텔레그램 전송을 완료했습니다" if success else "텔레그램 전송에 실패했습니다"
+    status_tag = "Dispatch Sent" if success else "Dispatch Failed"
+    status_hint = "에디터가 곧 확인 후 회신합니다" if success else "환경 변수(TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID)를 확인해주세요"
+
+    return render_template(
+        'result.html',
+        text=display_text,
+        status_text=status_text,
+        status_tag=status_tag,
+        status_hint=status_hint,
+    )
 
 
 @app.route('/send-links', methods=['POST'])
@@ -99,9 +114,21 @@ def send_links() -> str:
     if not token or token != session.get('csrf_token'):
         abort(400)
 
-    dispatch_market_links(prefix=f"[Manual Trigger] IP: {ip}")
+    message = dispatch_market_links(prefix=f"[Manual Trigger] IP: {ip}")
+    success = send_telegram_message(message, timeout=10, retries=1)
+
     display_text = format_for_display(format_links_message())
-    return render_template('result.html', text=display_text)
+    status_text = "텔레그램 전송을 완료했습니다" if success else "텔레그램 전송에 실패했습니다"
+    status_tag = "Dispatch Sent" if success else "Dispatch Failed"
+    status_hint = "에디터가 곧 확인 후 회신합니다" if success else "환경 변수(TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID)를 확인해주세요"
+
+    return render_template(
+        'result.html',
+        text=display_text,
+        status_text=status_text,
+        status_tag=status_tag,
+        status_hint=status_hint,
+    )
 
 if __name__ == '__main__':
     # Default port is 5000. Change to 80 for production if needed.
