@@ -14,8 +14,8 @@ from common.telegram_client import send_telegram_message
 
 
 MARKET_LINKS: Iterable[tuple[str, str]] = (
-    ("경제달력", "https://kr.investing.com/economic-calendar/"),
-    ("중앙은행 기준금리", "https://kr.investing.com/central-banks/"),
+    ("Economic calendar", "https://kr.investing.com/economic-calendar/"),
+    ("Central bank policy rates", "https://kr.investing.com/central-banks/"),
 )
 
 def format_links_message() -> str:
@@ -91,10 +91,10 @@ def send() -> str:
     message = f"[Web Dispatch] IP: {ip}\n{raw_text}" if raw_text else f"[Web Dispatch] IP: {ip}"
     success = send_telegram_message(message, timeout=10, retries=1)
 
-    display_text = format_for_display(raw_text or "(메시지 없음)")
-    status_text = "텔레그램 전송을 완료했습니다" if success else "텔레그램 전송에 실패했습니다"
+    display_text = format_for_display(raw_text or "(No message)")
+    status_text = "Telegram dispatch completed" if success else "Telegram dispatch failed"
     status_tag = "Dispatch Sent" if success else "Dispatch Failed"
-    status_hint = "에디터가 곧 확인 후 회신합니다" if success else "환경 변수(TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID)를 확인해주세요"
+    status_hint = "An editor will review and follow up shortly" if success else "Check TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID environment variables"
 
     return render_template(
         'result.html',
@@ -118,9 +118,9 @@ def send_links() -> str:
     success = send_telegram_message(message, timeout=10, retries=1)
 
     display_text = format_for_display(format_links_message())
-    status_text = "텔레그램 전송을 완료했습니다" if success else "텔레그램 전송에 실패했습니다"
+    status_text = "Telegram dispatch completed" if success else "Telegram dispatch failed"
     status_tag = "Dispatch Sent" if success else "Dispatch Failed"
-    status_hint = "에디터가 곧 확인 후 회신합니다" if success else "환경 변수(TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID)를 확인해주세요"
+    status_hint = "An editor will review and follow up shortly" if success else "Check TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID environment variables"
 
     return render_template(
         'result.html',
