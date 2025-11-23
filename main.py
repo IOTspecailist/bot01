@@ -10,12 +10,10 @@ from markupsafe import Markup, escape
 # Attempt to load environment variables from a .env file if present.
 load_dotenv()
 
-from common.telegram_client import send_telegram_message
-
 
 MARKET_LINKS: Iterable[tuple[str, str]] = (
-    ("Economic calendar", "https://kr.investing.com/economic-calendar/"),
-    ("Central bank policy rates", "https://kr.investing.com/central-banks/"),
+    ("경제달력", "https://kr.investing.com/economic-calendar/"),
+    ("중앙은행 기준금리", "https://kr.investing.com/central-banks/"),
 )
 
 def format_links_message() -> str:
@@ -32,23 +30,6 @@ def dispatch_market_links(prefix: str | None = None) -> str:
     if prefix:
         message = f"{prefix}\n{message}"
     return message
-
-
-def send_news_summary_message(raw_text: str, *, ip: str | None = None) -> bool:
-    """Send the user-provided news summary text to Telegram."""
-
-    message = raw_text
-    if ip:
-        message = f"[Web Dispatch] IP: {ip}\n{raw_text}" if raw_text else f"[Web Dispatch] IP: {ip}"
-    return send_telegram_message(message, timeout=10, retries=1)
-
-
-def send_recommended_calendars(*, ip: str | None = None) -> bool:
-    """Send the predefined market calendar links to Telegram."""
-
-    prefix = f"[Manual Trigger] IP: {ip}" if ip else None
-    message = dispatch_market_links(prefix=prefix)
-    return send_telegram_message(message, timeout=10, retries=1)
 
 
 def create_app() -> Flask:
@@ -104,21 +85,9 @@ def send() -> str:
     if not token or token != session.get('csrf_token'):
         abort(400)
 
-    raw_text = request.form.get('text', '').strip()
-    success = send_news_summary_message(raw_text, ip=ip)
-
-    display_text = format_for_display(raw_text or "(No message)")
-    status_text = "Telegram dispatch completed" if success else "Telegram dispatch failed"
-    status_tag = "Dispatch Sent" if success else "Dispatch Failed"
-    status_hint = "An editor will review and follow up shortly" if success else "Check SPORTSDATAIO_API_KEY/TELEGRAM_CHAT_ID environment variables"
-
-    return render_template(
-        'result.html',
-        text=display_text,
-        status_text=status_text,
-        status_tag=status_tag,
-        status_hint=status_hint,
-    )
+    raw_text = request.form.get('text', '')
+    display_text = format_for_display(raw_text)
+    return render_template('result.html', text=display_text)
 
 
 @app.route('/send-links', methods=['POST'])
@@ -130,20 +99,9 @@ def send_links() -> str:
     if not token or token != session.get('csrf_token'):
         abort(400)
 
-    success = send_recommended_calendars(ip=ip)
-
+    dispatch_market_links(prefix=f"[Manual Trigger] IP: {ip}")
     display_text = format_for_display(format_links_message())
-    status_text = "Telegram dispatch completed" if success else "Telegram dispatch failed"
-    status_tag = "Dispatch Sent" if success else "Dispatch Failed"
-    status_hint = "An editor will review and follow up shortly" if success else "Check SPORTSDATAIO_API_KEY/TELEGRAM_CHAT_ID environment variables"
-
-    return render_template(
-        'result.html',
-        text=display_text,
-        status_text=status_text,
-        status_tag=status_tag,
-        status_hint=status_hint,
-    )
+    return render_template('result.html', text=display_text)
 
 if __name__ == '__main__':
     # Default port is 5000. Change to 80 for production if needed.
