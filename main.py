@@ -34,6 +34,23 @@ def dispatch_market_links(prefix: str | None = None) -> str:
     return message
 
 
+def send_news_summary_message(raw_text: str, *, ip: str | None = None) -> bool:
+    """Send the user-provided news summary text to Telegram."""
+
+    message = raw_text
+    if ip:
+        message = f"[Web Dispatch] IP: {ip}\n{raw_text}" if raw_text else f"[Web Dispatch] IP: {ip}"
+    return send_telegram_message(message, timeout=10, retries=1)
+
+
+def send_recommended_calendars(*, ip: str | None = None) -> bool:
+    """Send the predefined market calendar links to Telegram."""
+
+    prefix = f"[Manual Trigger] IP: {ip}" if ip else None
+    message = dispatch_market_links(prefix=prefix)
+    return send_telegram_message(message, timeout=10, retries=1)
+
+
 def create_app() -> Flask:
     app = Flask(__name__, static_folder=None)
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'change_me')
@@ -88,13 +105,12 @@ def send() -> str:
         abort(400)
 
     raw_text = request.form.get('text', '').strip()
-    message = f"[Web Dispatch] IP: {ip}\n{raw_text}" if raw_text else f"[Web Dispatch] IP: {ip}"
-    success = send_telegram_message(message, timeout=10, retries=1)
+    success = send_news_summary_message(raw_text, ip=ip)
 
     display_text = format_for_display(raw_text or "(No message)")
     status_text = "Telegram dispatch completed" if success else "Telegram dispatch failed"
     status_tag = "Dispatch Sent" if success else "Dispatch Failed"
-    status_hint = "An editor will review and follow up shortly" if success else "Check TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID environment variables"
+    status_hint = "An editor will review and follow up shortly" if success else "Check SPORTSDATAIO_API_KEY/TELEGRAM_CHAT_ID environment variables"
 
     return render_template(
         'result.html',
@@ -114,13 +130,12 @@ def send_links() -> str:
     if not token or token != session.get('csrf_token'):
         abort(400)
 
-    message = dispatch_market_links(prefix=f"[Manual Trigger] IP: {ip}")
-    success = send_telegram_message(message, timeout=10, retries=1)
+    success = send_recommended_calendars(ip=ip)
 
     display_text = format_for_display(format_links_message())
     status_text = "Telegram dispatch completed" if success else "Telegram dispatch failed"
     status_tag = "Dispatch Sent" if success else "Dispatch Failed"
-    status_hint = "An editor will review and follow up shortly" if success else "Check TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID environment variables"
+    status_hint = "An editor will review and follow up shortly" if success else "Check SPORTSDATAIO_API_KEY/TELEGRAM_CHAT_ID environment variables"
 
     return render_template(
         'result.html',

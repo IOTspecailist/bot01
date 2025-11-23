@@ -11,7 +11,7 @@ Simple Flask-based webhook that sends form data to Telegram.
 
 Set these in your deployment environment (e.g., systemd `EnvironmentFile` or shell):
 
-- `TELEGRAM_BOT_TOKEN` – Telegram bot token
+- `SPORTSDATAIO_API_KEY` – Telegram bot token (use this instead of `TELEGRAM_BOT_TOKEN`)
 - `TELEGRAM_CHAT_ID` – Target chat/channel id
 - `SECRET_KEY` – Flask session secret (web server only)
 - Optional: `SCHEDULER_TEST_MODE=true` to schedule a one-off test run 30 seconds after startup
