@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>전송 완료 | 뉴스 브리핑 허브</title>
+    <title>Dispatch Complete | News Briefing Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -118,13 +118,13 @@
 <body>
     <div class="card">
         <span class="tag">{{ status_tag or 'Dispatch Sent' }}</span>
-        <h1>{{ status_text or '텔레그램 전송을 완료했습니다' }}</h1>
+        <h1>{{ status_text or 'Telegram dispatch completed' }}</h1>
         <div class="message">{{ text }}</div>
         <div class="actions">
-            <a class="button primary" href="/">메인 허브로 이동</a>
-            <a class="button secondary" href="/market-overview">경제지표 리포트</a>
+            <a class="button primary" href="/">Go to main hub</a>
+            <a class="button secondary" href="/market-overview">Market overview</a>
         </div>
-        <div class="timestamp">{{ status_hint or '에디터가 곧 확인 후 회신합니다' }}</div>
+        <div class="timestamp">{{ status_hint or 'An editor will review and follow up shortly' }}</div>
     </div>
 </body>
 </html>

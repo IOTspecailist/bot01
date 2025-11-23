@@ -62,11 +62,11 @@ def build_daily_message(now: datetime | None = None) -> str:
     """Create the daily message contents."""
     now = now or datetime.now(SEOUL_TZ)
     date_label = now.strftime("%Y-%m-%d (%a)")
-    header = f"[자동 알림] {date_label} 시장 링크"
+    header = f"[Auto Alert] {date_label} Market Links"
     body = [
-        "오늘의 경제 링크 모음",
-        "- 경제달력: https://kr.investing.com/economic-calendar/",
-        "- 중앙은행 기준금리: https://kr.investing.com/central-banks/",
+        "Today's economic links",
+        "- Economic calendar: https://kr.investing.com/economic-calendar/",
+        "- Central bank policy rates: https://kr.investing.com/central-banks/",
         "\n#bot01 #daily",
     ]
     return "\n".join([header, ""] + body)
